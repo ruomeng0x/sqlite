@@ -27,6 +27,7 @@
 ** $Id: select.c,v 1.26 2000/07/29 13:06:59 drh Exp $
 */
 #include "sqliteInt.h"
+#include "vdbe.h"
 
 /*
 ** Allocate a new Select structure and return a pointer to that

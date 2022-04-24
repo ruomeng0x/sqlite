@@ -29,6 +29,7 @@
 ** $Id: main.c,v 1.18 2000/08/22 13:40:51 drh Exp $
 */
 #include "sqliteInt.h"
+#include <unistd.h>
 
 /*
 ** This is the callback routine for the code that initializes the
@@ -329,9 +330,9 @@ static int sqlite_default_busy_callback(
 ){
   int rc;
 #if defined(HAVE_USLEEP) && HAVE_USLEEP
-  int delay = 10000;
-  int prior_delay = 0;
-  int timeout = (int)Timeout;
+  long long int delay = 10000;
+  long long int prior_delay = 0;
+  long long int timeout = (long long int)Timeout;
   int i;
 
   for(i=1; i<count; i++){ 
@@ -377,8 +378,9 @@ void sqlite_busy_handler(
 ** specified number of milliseconds before returning 0.
 */
 void sqlite_busy_timeout(sqlite *db, int ms){
+  long long int m = ms;
   if( ms>0 ){
-    sqlite_busy_handler(db, sqlite_default_busy_callback, (void*)ms);
+    sqlite_busy_handler(db, sqlite_default_busy_callback, (void*)m);
   }else{
     sqlite_busy_handler(db, 0, 0);
   }

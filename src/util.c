@@ -31,6 +31,7 @@
 #include "sqliteInt.h"
 #include <stdarg.h>
 #include <ctype.h>
+#include <string.h>
 
 #ifdef MEMORY_DEBUG
 

@@ -26,7 +26,8 @@
 **   http://www.hwaci.com/drh/
 */
 #include <stdio.h>
-#include <varargs.h>
+#include <stdarg.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
@@ -89,7 +90,7 @@ void Configlist_eat(/* struct config * */);
 void Configlist_reset(/* void */);
 
 /********* From the file "error.h" ***************************************/
-void ErrorMsg( /* char *, int, char *, ... */ );
+void ErrorMsg(const char* va_alist,.../* char *, int, char *, ... */ );
 
 /****** From the file "option.h" ******************************************/
 struct s_options {
@@ -394,7 +395,7 @@ void Action_add(app,type,sp,arg)
 struct action **app;
 enum e_action type;
 struct symbol *sp;
-char *arg;
+void *arg;
 {
   struct action *new;
   new = Action_new();
@@ -1108,8 +1109,7 @@ int max;
 #define ERRMSGSIZE  10000 /* Hope this is big enough.  No way to error check */
 #define LINEWIDTH      79 /* Max width of any output line */
 #define PREFIXLIMIT    30 /* Max width of the prefix on each line */
-void ErrorMsg(va_alist)
-va_dcl
+void ErrorMsg(const char* fmt,...)
 {
   char *filename;
   int lineno;
@@ -1122,7 +1122,7 @@ va_dcl
   va_list ap;
   int end, restart, base;
 
-  va_start(ap);
+  va_start(ap, fmt);
   filename = va_arg(ap,char*);
   lineno = va_arg(ap,int);
   format = va_arg(ap,char*);
@@ -1322,7 +1322,7 @@ char **argv;
 /*
 ** Return a pointer to the next structure in the linked list.
 */
-#define NEXT(A) (*(char**)(((int)A)+offset))
+#define NEXT(A) (*(char**)(((long long int)A)+offset))
 
 /*
 ** Inputs:
@@ -1396,11 +1396,11 @@ char *list;
 char **next;
 int (*cmp)();
 {
-  int offset;
+  long long int offset;
   char *ep;
   char *set[LISTSIZE];
-  int i;
-  offset = (int)next - (int)list;
+  long long int i;
+  offset = (long long int)next - (long long int)list;
   for(i=0; i<LISTSIZE; i++) set[i] = 0;
   while( list ){
     ep = list;
@@ -1428,11 +1428,12 @@ static FILE *errstream;
 ** of the n-th field.
 */
 static void errline(n,k,err)
-int n;
-int k;
+long long int n;
+long long int k;
 FILE *err;
 {
-  int spcnt, i;
+  int spcnt; 
+  int i;
   spcnt = 0;
   if( argv[0] ) fprintf(err,"%s",argv[0]);
   spcnt = strlen(argv[0]) + 1;
@@ -1548,7 +1549,7 @@ FILE *err;
         if( *end ){
           if( err ){
             fprintf(err,"%sillegal character in floating-point argument.\n",emsg);
-            errline(i,((int)end)-(int)argv[i],err);
+            errline(i,((long long int)end)-(long long int)argv[i],err);
           }
           errcnt++;
         }
@@ -1559,7 +1560,7 @@ FILE *err;
         if( *end ){
           if( err ){
             fprintf(err,"%sillegal character in integer argument.\n",emsg);
-            errline(i,((int)end)-(int)argv[i],err);
+            errline(i,((long long int)end)-(long long int)argv[i],err);
           }
           errcnt++;
         }
@@ -1686,17 +1687,17 @@ void OptPrint(){
       case OPT_INT:
       case OPT_FINT:
         fprintf(errstream,"  %s=<integer>%*s  %s\n",op[i].label,
-          max-strlen(op[i].label)-9,"",op[i].message);
+          max-(int)strlen(op[i].label)-9,"",op[i].message);
         break;
       case OPT_DBL:
       case OPT_FDBL:
         fprintf(errstream,"  %s=<real>%*s  %s\n",op[i].label,
-          max-strlen(op[i].label)-6,"",op[i].message);
+          max-(int)strlen(op[i].label)-6,"",op[i].message);
         break;
       case OPT_STR:
       case OPT_FSTR:
         fprintf(errstream,"  %s=<string>%*s  %s\n",op[i].label,
-          max-strlen(op[i].label)-8,"",op[i].message);
+          max-(int)strlen(op[i].label)-8,"",op[i].message);
         break;
     }
   }
@@ -2634,10 +2635,12 @@ struct lemon *lemp;
   FILE *in;
   char *tpltname;
   char *cp;
+  int len;
 
   cp = strrchr(lemp->filename,'.');
   if( cp ){
-    sprintf(buf,"%.*s.lt",(int)cp-(int)lemp->filename,lemp->filename);
+    len = (long long int)cp-(long long int)lemp->filename;
+    sprintf(buf,"%.*s.lt",len,lemp->filename);
   }else{
     sprintf(buf,"%s.lt",lemp->filename);
   }

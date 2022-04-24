@@ -308,7 +308,7 @@ int sqliteRunParser(Parse *pParse, char *zSql, char **pzErrMsg){
   static FILE *trace = 0;
   extern void *sqliteParserAlloc(void*(*)(int));
   extern void sqliteParserFree(void*, void(*)(void*));
-  extern int sqliteParser(void*, int, ...);
+  extern int sqliteParser(void*, int, Token, Parse*);
   extern void sqliteParserTrace(FILE*, char *);
 
   i = 0;

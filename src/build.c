@@ -95,7 +95,7 @@ Expr *sqliteExpr(int op, Expr *pLeft, Expr *pRight, Token *pToken){
 */
 void sqliteExprSpan(Expr *pExpr, Token *pLeft, Token *pRight){
   pExpr->span.z = pLeft->z;
-  pExpr->span.n = pRight->n + (int)pRight->z - (int)pLeft->z;
+  pExpr->span.n = pRight->n + (long long int)pRight->z - (long long int)pLeft->z;
 }
 
 /*
@@ -362,7 +362,7 @@ void sqliteEndTable(Parse *pParse, Token *pEnd){
 
     v = sqliteGetVdbe(pParse);
     if( v==0 ) return;
-    n = (int)pEnd->z - (int)pParse->sFirstToken.z + 1;
+    n = (long long int)pEnd->z - (long long int)pParse->sFirstToken.z + 1;
     base = sqliteVdbeAddOpList(v, ArraySize(addTable), addTable);
     sqliteVdbeChangeP3(v, base+3, p->zName, 0);
     sqliteVdbeChangeP3(v, base+4, p->zName, 0);
@@ -612,7 +612,7 @@ void sqliteCreateIndex(
     sqliteVdbeAddOp(v, OP_Open, 1, 1, pIndex->zName, 0);
     if( pStart && pEnd ){
       int base;
-      n = (int)pEnd->z - (int)pStart->z + 1;
+      n = (long long int)pEnd->z - (long long int)pStart->z + 1;
       base = sqliteVdbeAddOpList(v, ArraySize(addTable), addTable);
       sqliteVdbeChangeP3(v, base+3, pIndex->zName, 0);
       sqliteVdbeChangeP3(v, base+4, pTab->zName, 0);
