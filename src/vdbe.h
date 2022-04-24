@@ -193,6 +193,6 @@ int sqliteVdbeList(Vdbe*,sqlite_callback,void*,char**);
 void sqliteVdbeResolveLabel(Vdbe*, int);
 int sqliteVdbeCurrentAddr(Vdbe*);
 void sqliteVdbeTrace(Vdbe*,FILE*);
-
+void sqliteVdbeCompressSpace(Vdbe *p, int addr);
 
 #endif

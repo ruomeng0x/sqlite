@@ -45,6 +45,7 @@
 */
 #include "sqliteInt.h"
 #include <unistd.h>
+#include <ctype.h>
 
 /*
 ** SQL is translated into a sequence of instructions to be

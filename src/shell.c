@@ -37,7 +37,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 #else
-# define readline getline
+# define readline getline1
 # define add_history(X) 
 #endif
 
@@ -50,7 +50,7 @@
 ** The interface is like "readline" but no command-line editing
 ** is done.
 */
-static char *getline(char *zPrompt){
+static char *getline1(char *zPrompt){
   char *zLine;
   int nLine;
   int n;
@@ -104,7 +104,7 @@ static char *one_input_line(const char *zPrior, int isatty){
   char *zPrompt;
   char *zResult;
   if( !isatty ){
-    return getline(0);
+    return getline1(0);
   }
   if( zPrior && zPrior[0] ){
     zPrompt = "   ...> ";
@@ -488,7 +488,7 @@ static void do_meta_command(char *zLine, sqlite *db, struct callback_data *p){
   }else
 
   if( c=='h' && strncmp(azArg[0], "help", n)==0 ){
-    fprintf(stderr,zHelp);
+    fprintf(stderr,"%s",zHelp);
   }else
 
   if( c=='i' && strncmp(azArg[0], "indices", n)==0 && nArg>1 ){
