@@ -1,0 +1,7 @@
+.idea
+build
+
+compile_commands.json
+
+src/sqlite.h
+src/parse.h

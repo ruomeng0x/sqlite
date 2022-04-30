@@ -533,17 +533,19 @@ fi
 
 temp=`echo $srcdir | grep '[^./]'`
 
-if test "$temp" = ""; then
-  { echo "configure: error: 
-**************************************************************************
-** This program may not be compiled in the same directory that contains **
-** the configure script or any subdirectory of that directory.   Rerun  **
-** the configure script from a directory that is separate from the      **
-** source tree.                                                         **
-**                                                                      **
-** See the README file for additional information.                      **
-**************************************************************************" 1>&2; exit 1; }
-fi
+# if test "$temp" = ""; then
+#   { echo "configure: error: 
+# **************************************************************************
+# ** This program may not be compiled in the same directory that contains **
+# ** the configure script or any subdirectory of that directory.   Rerun  **
+# ** the configure script from a directory that is separate from the      **
+# ** source tree.                                                         **
+# **                                                                      **
+# ** See the README file for additional information.                      **
+# **************************************************************************" 1>&2;
+# exit 1;
+# }
+# fi
 
 #########
 # Set up an appropriate program prefix

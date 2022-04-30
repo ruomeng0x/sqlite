@@ -126,9 +126,11 @@ parse.h:	parse.c
 parse.c:	$(TOP)/src/parse.y lemon
 	cp $(TOP)/src/parse.y .
 	./lemon parse.y
+	cp parse.h ${TOP}/src
 
 sqlite.h:	$(TOP)/src/sqlite.h.in
 	sed s/--VERS--/`cat ${TOP}/VERSION`/ $(TOP)/src/sqlite.h.in >sqlite.h
+	cp sqlite.h ${TOP}/src
 
 tokenize.o:	$(TOP)/src/tokenize.c $(HDR)
 	$(TCC) $(GDBM_FLAGS) -c $(TOP)/src/tokenize.c
@@ -235,3 +237,4 @@ clean:
 	rm -f lemon lempar.c parse.* sqlite.tar.gz
 	rm -f $(PUBLISH)
 	rm -f *.da *.bb *.bbg gmon.out
+	rm -f ${TOP}/src/sqlite.h ${TOP}/src/parse.h
