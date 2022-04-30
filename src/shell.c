@@ -10,7 +10,7 @@
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ** General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public
 ** License along with this library; if not, write to the
 ** Free Software Foundation, Inc., 59 Temple Place - Suite 330,
@@ -37,8 +37,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 #else
-# define readline getline
-# define add_history(X) 
+# define readline getline1
+# define add_history(X)
 #endif
 
 /*
@@ -50,7 +50,7 @@
 ** The interface is like "readline" but no command-line editing
 ** is done.
 */
-static char *getline(char *zPrompt){
+static char *getline1(char *zPrompt){
   char *zLine;
   int nLine;
   int n;
@@ -104,7 +104,7 @@ static char *one_input_line(const char *zPrior, int isatty){
   char *zPrompt;
   char *zResult;
   if( !isatty ){
-    return getline(0);
+    return getline1(0);
   }
   if( zPrior && zPrior[0] ){
     zPrompt = "   ...> ";
@@ -156,7 +156,7 @@ static int is_numeric(const char *z){
   if( *z=='-' || *z=='+' ){
     z++;
   }
-  while( isdigit(*z) ){ 
+  while( isdigit(*z) ){
     seen_digit = 1;
     z++;
   }
@@ -259,7 +259,7 @@ static int callback(void *pArg, int nArg, char **azArg, char **azCol){
             if( w<n ) w = n;
           }
           if( i<ArraySize(p->actualWidth) ){
-            p->actualWidth[i] = w; 
+            p->actualWidth[i] = w;
           }
           if( p->showHeader ){
             fprintf(p->out,"%-*.*s%s",w,w,azCol[i], i==nArg-1 ? "\n": "  ");
@@ -348,7 +348,7 @@ static int callback(void *pArg, int nArg, char **azArg, char **azCol){
       }
       fprintf(p->out,");\n");
     }
-  }      
+  }
   return 0;
 }
 
@@ -381,7 +381,7 @@ static int dump_callback(void *pArg, int nArg, char **azArg, char **azCol){
 /*
 ** Text of a help message
 */
-static char zHelp[] = 
+static char zHelp[] =
   ".dump ?TABLE? ...      Dump the database in an text format\n"
   ".exit                  Exit this program\n"
   ".explain               Set output mode suitable for EXPLAIN\n"
@@ -433,7 +433,7 @@ static void do_meta_command(char *zLine, sqlite *db, struct callback_data *p){
   if( nArg==0 ) return;
   n = strlen(azArg[0]);
   c = azArg[0][0];
- 
+
   if( c=='d' && strncmp(azArg[0], "dump", n)==0 ){
     char *zErrMsg = 0;
     char zSql[1000];
@@ -449,7 +449,7 @@ static void do_meta_command(char *zLine, sqlite *db, struct callback_data *p){
                       "WHERE tbl_name LIKE '%.800s' AND type!='meta' "
                       "ORDER BY type DESC, name", azArg[i]);
         sqlite_exec(db, zSql, dump_callback, p, &zErrMsg);
-        
+
       }
     }
     if( zErrMsg ){
@@ -483,12 +483,12 @@ static void do_meta_command(char *zLine, sqlite *db, struct callback_data *p){
       val = 1;
     }else if( strcmp(z,"yes")==0 ){
       val = 1;
-    } 
+    }
     p->showHeader = val;
   }else
 
   if( c=='h' && strncmp(azArg[0], "help", n)==0 ){
-    fprintf(stderr,zHelp);
+    fprintf(stderr,"%s",zHelp);
   }else
 
   if( c=='i' && strncmp(azArg[0], "indices", n)==0 && nArg>1 ){
@@ -711,7 +711,7 @@ int main(int argc, char **argv){
       free(zLine);
       if( sqlite_complete(zSql) ){
         data.cnt = 0;
-        if( sqlite_exec(db, zSql, callback, &data, &zErrMsg)!=0 
+        if( sqlite_exec(db, zSql, callback, &data, &zErrMsg)!=0
              && zErrMsg!=0 ){
           printf("SQL error: %s\n", zErrMsg);
           free(zErrMsg);
